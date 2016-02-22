@@ -1,12 +1,12 @@
 package org.alljoyn.config.test.test;
 
 import org.alljoyn.config.test.ConfigApplication.Device;
+import org.alljoyn.config.test.ConfigApplication;
 import org.alljoyn.config.test.MainActivity;
 import org.alljoyn.config.test.R;
 
 import android.content.BroadcastReceiver;
 import android.test.ActivityInstrumentationTestCase2;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,10 +14,8 @@ import android.widget.TextView;
 public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity>
 {
     private MainActivity mMainActivity;
-    private BroadcastReceiver mBroadcastReceiver;
     private Button mAJConnectBtn;
     private TextView mCurrentNetworkView;
-    private ArrayAdapter<Device> mDeviceAdapter;
 
     public MainActivityTest() {
         super(MainActivity.class);
@@ -29,31 +27,25 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         super.setUp();
         setActivityInitialTouchMode(true);
         mMainActivity = getActivity();
-        initLayoutComponents();
+        initComponents();
     }
 
-    private void initLayoutComponents()
+    private void initComponents()
     {
         mAJConnectBtn = (Button) mMainActivity.findViewById(R.id.AllJoynConnect);
         mCurrentNetworkView = (TextView) mMainActivity.findViewById(R.id.current_network_name);
     }
-
-    private void setValueToLayoutComponent(String value)
+    
+    public void testAJConnectBtnStringCorrect()
     {
-        getInstrumentation().waitForIdleSync();
-        getInstrumentation().sendStringSync(value);
-        getInstrumentation().waitForIdleSync();
+        assertEquals(getActivity().getString(R.string.AllJoynConnect), mAJConnectBtn.getText().toString());
     }
     
-    private void requestFocusLayoutComponent(final View component)
+    public void testCurrentNetWorkViewStringCorrect()
     {
-        getInstrumentation().runOnMainSync(new Runnable() {
-            @Override
-            public void run()
-            {
-                component.requestFocus();
-            }
-        });
+        String expect =getActivity().getString(R.string.current_network,
+                ((ConfigApplication) getActivity().getApplication()).getCurrentSSID()); 
+        assertEquals(expect, mCurrentNetworkView.getText().toString());
     }
     
     public void testMainActivityNotNull()
